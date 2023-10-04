@@ -88,13 +88,13 @@ document.getElementById('redeemLUSD').addEventListener('click', async () => {
             const prevPositionHint = prevAndNext[0];
             console.log(`Inserting after Trove: ${prevPositionHint}`);
 
-            const feeFloor = new BN(await troveManager.methods.REDEMPTION_FEE_FLOOR().call());
+            const feeFloor = new web3.utils.BN(await troveManager.methods.REDEMPTION_FEE_FLOOR().call());
             let maxFeePercentage;
             if (truncatedLUSDamount.length > 3 + 18) {
-                maxFeePercentage = feeFloor.mul(new BN(7)).div(new BN(5));
+                maxFeePercentage = feeFloor.mul(new web3.utils.BN(7)).div(new web3.utils.BN(5));
                 console.log(`Redeeming above 1000 LUSD, set low max fee: ${maxFeePercentage}`);
             } else {
-                maxFeePercentage = feeFloor.mul(new BN(77)).div(new BN(5));
+                maxFeePercentage = feeFloor.mul(new web3.utils.BN(77)).div(new web3.utils.BN(5));
                 console.log(`Redeeming below 1000 LUSD, set high max fee: ${maxFeePercentage}`);
             }
 
