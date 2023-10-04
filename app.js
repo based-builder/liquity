@@ -30,13 +30,18 @@ let sortedTroves;
 
 window.addEventListener('load', async () => {
     if (typeof window.ethereum !== 'undefined') {
+        console.log('MetaMask is installed!');
         web3 = new Web3(window.ethereum);
-        userAccount = (await web3.eth.getAccounts())[0];
         lusdToken = new web3.eth.Contract(LUSD_TOKEN_ABI, LUSD_TOKEN_ADDRESS);
         troveManager = new web3.eth.Contract(TROVE_MANAGER_ABI, TROVE_MANAGER_ADDRESS);
         liquityPriceFeed = new web3.eth.Contract(LIQUITY_PRICE_FEED_ABI, LIQUITY_PRICE_FEED_ADDRESS);
         hintHelpers = new web3.eth.Contract(HINT_HELPERS_ABI, HINT_HELPERS_ADDRESS);
         sortedTroves = new web3.eth.Contract(SORTED_TROVES_ABI, SORTED_TROVES_ADDRESS);
+        // Check if accounts are already connected
+        const accounts = await web3.eth.getAccounts();
+        if (accounts.length > 0) {
+            userAccount = accounts[0];
+        }
     } else {
         alert("Please install or enable MetaMask.");
     }
@@ -44,7 +49,13 @@ window.addEventListener('load', async () => {
 
 document.getElementById('connectWallet').addEventListener('click', async () => {
     if (typeof window.ethereum !== 'undefined') {
-        userAccount = (await web3.eth.getAccounts())[0];
+        try {
+            // Request user's accounts
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            userAccount = accounts[0];
+        } catch (error) {
+            console.error('User denied account access');
+        }
     } else {
         alert("Please install or enable MetaMask.");
     }
