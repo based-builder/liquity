@@ -88,8 +88,10 @@ document.getElementById('redeemLUSD').addEventListener('click', async () => {
             const prevPositionHint = prevAndNext[0];
             console.log(`Inserting after Trove: ${prevPositionHint}`);
 
-            const feeFloor = new web3.utils.BN(await troveManager.methods.REDEMPTION_FEE_FLOOR().call());
-            const maxFeePercentage = feeFloor.mul(new web3.utils.BN(10)).div(new web3.utils.BN(5));
+            const maxFeeInput = parseFloat(document.getElementById('maxFee').value);
+            const REDEMPTION_FEE_FLOOR = new web3.utils.BN(await troveManager.methods.REDEMPTION_FEE_FLOOR().call());
+            const maxFeePercentage = REDEMPTION_FEE_FLOOR.mul(new web3.utils.BN(maxFeeInput / 0.5));
+            console.log(`Max acceptable fee percentage set to: ${maxFeePercentage}`);
 
             await troveManager.methods.redeemCollateral(truncatedLUSDamount, firstRedemptionHint, prevPositionHint, ZERO_ADDRESS,
                     partialRedemptionHintNICR, MAX_ITERATIONS, maxFeePercentage).send({ from: userAccount });      
